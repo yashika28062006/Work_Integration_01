@@ -1,0 +1,47 @@
+
+===== DATASET PROFILE =====
+
+Rows : 5
+Columns : 4
+
+Column Types
+id              int64
+name              str
+followers       int64
+engagement    float64
+dtype: object
+
+Missing Values
+id            0
+name          0
+followers     0
+engagement    0
+dtype: int64
+
+Duplicate Rows
+0
+
+===== NUMERICAL STATISTICS =====
+
+id
+Minimum : 1
+Maximum : 5
+Mean    : 3.0
+Median  : 3.0
+
+followers
+Minimum : 8700
+Maximum : 15000
+Mean    : 11300.0
+Median  : 11000.0
+
+engagement
+Minimum : 3.5
+Maximum : 5.2
+Mean    : 4.46
+Median  : 4.7
+
+===== QUALITY ISSUES =====
+✓ No major data quality issues found.
+
+✓ Dataset profiling completed successfully!
