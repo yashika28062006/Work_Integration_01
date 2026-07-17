@@ -1,0 +1,16 @@
+[
+    {
+      "id": 1,
+      "customer": {
+        "name": "Alice",
+        "city": "Chennai"
+      }
+    },
+    {
+      "id": 2,
+      "customer": {
+        "name": "Bob",
+        "city": "Bangalore"
+      }
+    }
+  ]
