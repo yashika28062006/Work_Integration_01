@@ -1,0 +1,6 @@
+{
+    "timestamp": "2026-07-21T10:53:44.964242",
+    "removed_records": 3,
+    "reason": "Duplicate removal",
+    "audit_file": "output/removed_duplicates_audit.csv"
+}
