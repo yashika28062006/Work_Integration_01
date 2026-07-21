@@ -1,0 +1,8 @@
+name,category,segment,city
+" John "," Electronics ","B2B","São Paulo"
+"JOHN","electronics","b2b","Montréal"
+"john"," ELECTRONICS ","B 2 B","São Paulo"
+"Alice ","Home Appliances","business-to-business","München"
+" BOB","Furniture","SME","Zürich"
+"Bob "," furniture ","small medium enterprise","Québec"
+"Charlie"," ELECTRONICS","enterprise","Bogotá"
