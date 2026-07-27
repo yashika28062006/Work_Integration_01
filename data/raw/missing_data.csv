@@ -1,0 +1,6 @@
+customer_id,name,email,amount,category,quantity,region,last_updated
+1,Alice,alice@example.com,100,A,2,North,2026-07-01
+2,Bob,,250,B,,South,2026-07-02
+3,Alice,alice@example.com,,A,1,,2026-07-03
+4,,charlie@example.com,500,C,5,East,
+5,Diana,,200,B,3,South,2026-07-05

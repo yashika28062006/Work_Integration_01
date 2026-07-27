@@ -1,0 +1,32 @@
+
+===== CSV REPORT =====
+Rows : 5
+Columns : 4
+
+Column Types
+id              int64
+name              str
+followers       int64
+engagement    float64
+dtype: object
+
+First 3 Rows
+   id     name  followers  engagement
+0   1    Alice      12000         4.8
+1   2      Bob       9800         3.5
+2   3  Charlie      15000         5.2
+
+===== JSON REPORT =====
+Rows : 2
+Columns : 3
+
+Column Types
+id               int64
+customer.name      str
+customer.city      str
+dtype: object
+
+First 3 Rows
+   id customer.name customer.city
+0   1         Alice       Chennai
+1   2           Bob     Bangalore
