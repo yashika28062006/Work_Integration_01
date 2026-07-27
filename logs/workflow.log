@@ -1,0 +1,3 @@
+2026-07-27 13:00:06,256 - INFO - Loaded 6 rows.
+2026-07-27 13:00:06,258 - INFO - Processed 6 rows -> 4 rows.
+2026-07-27 13:00:06,259 - INFO - Saved output to data/processed/processed_data.csv
