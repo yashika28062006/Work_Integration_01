@@ -1,0 +1,15 @@
+{
+    "total_records": 6,
+    "passed": 2,
+    "failed": 4,
+    "validation_rules": [
+        "valid_age",
+        "valid_price",
+        "valid_birth_date",
+        "valid_customer_id",
+        "valid_email",
+        "valid_email_format",
+        "valid_phone",
+        "valid_date_order"
+    ]
+}

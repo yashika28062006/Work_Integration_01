@@ -1,0 +1,40 @@
+{
+    "amount": {
+        "column_type": "Numerical",
+        "strategy": "Median",
+        "value_used": 225.0,
+        "business_reasoning": "Median avoids influence from outliers.",
+        "risk_assessment": "Low"
+    },
+    "quantity": {
+        "column_type": "Numerical",
+        "strategy": "Median",
+        "value_used": 2.5,
+        "business_reasoning": "Median preserves the typical quantity.",
+        "risk_assessment": "Low"
+    },
+    "name": {
+        "column_type": "Categorical",
+        "strategy": "Mode",
+        "business_reasoning": "Most frequent value preserves distribution.",
+        "risk_assessment": "Low"
+    },
+    "region": {
+        "column_type": "Categorical",
+        "strategy": "Mode",
+        "business_reasoning": "Most common region maintains consistency.",
+        "risk_assessment": "Low"
+    },
+    "email": {
+        "column_type": "Critical Identifier",
+        "strategy": "Drop Rows",
+        "business_reasoning": "Records without email are incomplete.",
+        "risk_assessment": "Low"
+    },
+    "last_updated": {
+        "column_type": "Time Series",
+        "strategy": "Forward Fill",
+        "business_reasoning": "Previous timestamp assumed valid.",
+        "risk_assessment": "Medium"
+    }
+}

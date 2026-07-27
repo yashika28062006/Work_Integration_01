@@ -1,0 +1,5 @@
+customer_id,age,price,birth_date,email,phone,start_date,end_date,valid_age,valid_price,valid_birth_date,valid_customer_id,valid_email,valid_email_format,valid_phone,valid_date_order,valid_reference,passes_all_checks
+102.0,-5,500,2010-08-15,aliceexample.com,987654321,2025-02-01,2025-01-30,False,True,True,True,True,False,False,False,True,False
+,35,-100,1990-04-20,bob@example.com,9876543212,2025-03-01,2025-03-05,True,False,True,False,True,True,True,True,False,False
+104.0,160,700,2050-01-01,charlie@example.com,abcdefghij,2025-04-15,2025-04-10,False,True,False,True,True,True,False,False,True,False
+105.0,40,900,1985-12-12,,9123456789,2025-05-01,2025-05-15,True,True,True,True,False,False,True,True,True,False
