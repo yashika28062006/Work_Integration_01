@@ -1,73 +1,176 @@
-import os
 import pandas as pd
+import os
+import json
 
+# ==========================================================
+# CREATE REQUIRED FOLDERS
+# ==========================================================
+os.makedirs("data/raw", exist_ok=True)
+os.makedirs("data/processed", exist_ok=True)
+os.makedirs("output", exist_ok=True)
 
-def strip_all_strings(df):
-    """Strip whitespace from all string columns."""
+# ==========================================================
+# CREATE SAMPLE DATASET
+# ==========================================================
+df = pd.DataFrame({
+    "name": [
+        " John ",
+        "JOHN",
+        "john ",
+        " Alice ",
+        "BOB",
+        " Bob ",
+        None
+    ],
+    "category": [
+        " Electronics ",
+        "electronics",
+        "ELECTRONICS",
+        "Home Appliances",
+        "Furniture",
+        " furniture ",
+        "Electronics"
+    ],
+    "segment": [
+        "B2B",
+        "b2b",
+        "B 2 B",
+        "business-to-business",
+        "SME",
+        "small medium enterprise",
+        "Enterprise"
+    ],
+    "city": [
+        "São Paulo",
+        "Montréal",
+        "São Paulo",
+        "München",
+        "Zürich",
+        "Québec",
+        "Bogotá"
+    ]
+})
 
-    string_cols = df.select_dtypes(include=["object", "string"]).columns
+# Save original data
+df.to_csv("data/raw/string_data.csv", index=False)
 
-    print("\n" + "=" * 60)
-    print("TASK 1 - STRIP WHITESPACE")
-    print("=" * 60)
+print("=" * 70)
+print("ORIGINAL DATA")
+print("=" * 70)
+print(df)
 
-    for col in string_cols:
-        before = df[col].nunique(dropna=False)
+print("\nCATEGORY VALUE COUNTS BEFORE")
+print(df["category"].value_counts(dropna=False))
 
-        whitespace_count = (
-            df[col]
-            .fillna("")
-            .astype(str)
-            .str.startswith(" ")
-            |
-            df[col]
-            .fillna("")
-            .astype(str)
-            .str.endswith(" ")
-        ).sum()
+print("\nNAME VALUE COUNTS BEFORE")
+print(df["name"].value_counts(dropna=False))
 
-        df[col] = df[col].str.strip()
+print("\nFIRST 5 ROWS BEFORE CLEANING")
+print(df.head())
 
-        after = df[col].nunique(dropna=False)
+# ==========================================================
+# TASK 1 - STRIP WHITESPACE
+# ==========================================================
+print("\n" + "=" * 60)
+print("TASK 1 - STRIP WHITESPACE")
+print("=" * 60)
 
-        print(f"{col}: {before} → {after} unique values")
-        print(f"Whitespace issues fixed: {whitespace_count}")
+string_cols = df.select_dtypes(include=["object", "string"]).columns
 
-    return df
+total_fixed = 0
 
+for col in string_cols:
 
-def normalize_casing(df, columns_to_lower):
-    """Convert specified columns to lowercase."""
+    before_unique = df[col].nunique(dropna=False)
 
-    print("\n" + "=" * 60)
-    print("TASK 2 - NORMALIZE CASING")
-    print("=" * 60)
+    whitespace_count = (
+        df[col]
+        .fillna("")
+        .apply(lambda x: x != x.strip())
+        .sum()
+    )
 
-    for col in columns_to_lower:
-        df[col] = df[col].str.lower()
-        print(f"Normalized '{col}' to lowercase")
+    total_fixed += whitespace_count
 
-    return df
+    df[col] = df[col].str.strip()
 
+    after_unique = df[col].nunique(dropna=False)
 
-def remove_special_characters(df, columns):
-    """Remove special characters using regex."""
+    print(f"{col}: {before_unique} -> {after_unique} unique values")
+    print(f"Whitespace issues fixed: {whitespace_count}")
 
-    print("\n" + "=" * 60)
-    print("TASK 3 - REMOVE SPECIAL CHARACTERS")
-    print("=" * 60)
+print(f"\nTotal whitespace issues fixed: {total_fixed}")
 
-    for col in columns:
-        df[col] = df[col].str.replace(
-            r"[^a-zA-Z0-9 ]",
-            "",
-            regex=True,
-        )
+print("\nCATEGORY VALUE COUNTS AFTER STRIP")
+print(df["category"].value_counts(dropna=False))
 
-        print(f"Removed special characters from '{col}'")
+print("\nNAME VALUE COUNTS AFTER STRIP")
+print(df["name"].value_counts(dropna=False))
 
-    return df
+# ==========================================================
+# TASK 2 - NORMALIZE CASING
+# ==========================================================
+print("\n" + "=" * 60)
+print("TASK 2 - NORMALIZE CASING")
+print("=" * 60)
 
+print("\nBusiness Decision:")
+print("Using lowercase for consistency across all text fields.")
+
+columns = ["name", "category", "segment", "city"]
+
+for col in columns:
+    df[col] = df[col].str.lower()
+    print(f"Normalized '{col}' to lowercase")
+
+print("\nAfter Lowercase")
+print(df.head())
+
+# ==========================================================
+# TASK 3 - REMOVE SPECIAL CHARACTERS
+# ==========================================================
+print("\n" + "=" * 60)
+print("TASK 3 - REMOVE SPECIAL CHARACTERS")
+print("=" * 60)
+
+print("""
+Regex Pattern Used:
+[^a-zA-Z0-9 ]
+
+Explanation:
+^ = NOT
+a-z = lowercase letters
+A-Z = uppercase letters
+0-9 = digits
+space = keep spaces
+
+Everything else is removed.
+""")
+
+print("\nCities Before Cleaning")
+print(df["city"])
+
+df["city"] = df["city"].str.replace(
+    r"[^a-zA-Z0-9 ]",
+    "",
+    regex=True
+)
+
+df["segment"] = df["segment"].str.replace(
+    r"[^a-zA-Z0-9 ]",
+    "",
+    regex=True
+)
+
+print("\nCities After Cleaning")
+print(df["city"])
+
+# ==========================================================
+# TASK 4 - STANDARDIZE LABELS
+# ==========================================================
+print("\n" + "=" * 60)
+print("TASK 4 - STANDARDIZE LABELS")
+print("=" * 60)
 
 segment_map = {
     "b2b": "B2B",
@@ -75,30 +178,43 @@ segment_map = {
     "businesstobusiness": "B2B",
     "sme": "SMB",
     "small medium enterprise": "SMB",
-    "enterprise": "Enterprise",
+    "enterprise": "Enterprise"
 }
 
+print("\nBusiness Decision")
+print("""
+All business customer variants are standardized.
 
-def standardize_segments(df):
-    """Standardize segment labels."""
+b2b
+b 2 b
+business-to-business
 
-    print("\n" + "=" * 60)
-    print("TASK 4 - STANDARDIZE LABELS")
-    print("=" * 60)
+→ B2B
 
-    before = df["segment"].value_counts(dropna=False)
+SME
+small medium enterprise
 
-    df["segment"] = df["segment"].replace(segment_map)
+→ SMB
 
-    after = df["segment"].value_counts(dropna=False)
+enterprise
 
-    print("\nBefore:")
-    print(before)
+→ Enterprise
+""")
 
-    print("\nAfter:")
-    print(after)
+print("\nBefore Mapping")
+print(df["segment"].value_counts())
 
-    return df
+df["segment"] = df["segment"].replace(segment_map)
+
+print("\nAfter Mapping")
+print(df["segment"].value_counts())
+
+# ==========================================================
+# TASK 5 - REUSABLE FUNCTION
+# ==========================================================
+print("\n" + "=" * 60)
+print("TASK 5 - REUSABLE FUNCTION")
+print("=" * 60)
 
 
 def clean_text_column(
@@ -106,11 +222,13 @@ def clean_text_column(
     lowercase=True,
     strip=True,
     remove_special=False,
-    mapping=None,
+    mapping=None
 ):
-    """Reusable text cleaning function."""
 
     result = series.copy()
+
+    if result.isna().any():
+        print(f"Warning: {result.isna().sum()} null values detected.")
 
     if strip:
         result = result.str.strip()
@@ -122,99 +240,124 @@ def clean_text_column(
         result = result.str.replace(
             r"[^a-zA-Z0-9 ]",
             "",
-            regex=True,
+            regex=True
         )
 
-    if mapping:
+    if mapping is not None:
         result = result.replace(mapping)
 
     return result
 
 
-def main():
+print("\nApplying reusable function...")
 
-    # Create output folder automatically
-    os.makedirs("data/processed", exist_ok=True)
+df["name"] = clean_text_column(
+    df["name"],
+    lowercase=True,
+    strip=True
+)
 
-    # Load dataset
-    df = pd.read_csv("data/raw/string_data.csv")
+df["category"] = clean_text_column(
+    df["category"],
+    lowercase=True,
+    strip=True
+)
 
-    print("=" * 70)
-    print("ORIGINAL DATA")
-    print("=" * 70)
-    print(df)
+df["city"] = clean_text_column(
+    df["city"],
+    lowercase=True,
+    strip=True,
+    remove_special=True
+)
 
-    print("\nCATEGORY VALUE COUNTS BEFORE")
-    print(df["category"].value_counts(dropna=False))
+df["segment"] = clean_text_column(
+    df["segment"],
+    lowercase=False,
+    strip=True,
+    mapping=segment_map
+)
 
-    # Task 1
-    df = strip_all_strings(df)
+print("\nParameter Choices")
+print("""
+Name:
+lowercase=True
+strip=True
 
-    # Task 2
-    df = normalize_casing(
-        df,
-        [
-            "name",
-            "category",
-            "segment",
-            "city",
-        ],
-    )
+Category:
+lowercase=True
+strip=True
 
-    print("\nCATEGORY VALUE COUNTS AFTER LOWERCASE")
-    print(df["category"].value_counts(dropna=False))
+City:
+lowercase=True
+strip=True
+remove_special=True
 
-    # Task 3
-    df = remove_special_characters(
-        df,
-        [
-            "city",
-            "segment",
-        ],
-    )
+Segment:
+mapping=segment_map
+""")
 
-    # Task 4
-    df = standardize_segments(df)
+# ==========================================================
+# EDGE CASE TESTING
+# ==========================================================
+print("\n" + "=" * 60)
+print("EDGE CASE TESTING")
+print("=" * 60)
 
-    print("\n" + "=" * 60)
-    print("TASK 5 - REUSABLE FUNCTION")
-    print("=" * 60)
+test_cases = pd.Series([
+    "  Product A  ",
+    "PRODUCT B",
+    "Product_C",
+    None,
+    ""
+])
 
-    df["name"] = clean_text_column(
-        df["name"],
+print("Original Test Data")
+print(test_cases)
+
+print("\nCleaned Test Data")
+
+print(
+    clean_text_column(
+        test_cases,
         lowercase=True,
         strip=True,
+        remove_special=True
     )
+)
 
-    df["category"] = clean_text_column(
-        df["category"],
-        lowercase=True,
-        strip=True,
-    )
+# ==========================================================
+# SAVE OUTPUTS
+# ==========================================================
+df.to_csv(
+    "data/processed/string_cleaned_data.csv",
+    index=False
+)
 
-    df["city"] = clean_text_column(
-        df["city"],
-        lowercase=True,
-        strip=True,
-        remove_special=True,
-    )
+summary = {
+    "rows": len(df),
+    "columns": list(df.columns),
+    "whitespace_fixed": int(total_fixed),
+    "regex_used": "[^a-zA-Z0-9 ]",
+    "mapping_categories": 3
+}
 
-    print("\nFINAL CLEANED DATA")
-    print(df)
+with open(
+    "output/string_cleaning_summary.json",
+    "w"
+) as f:
+    json.dump(summary, f, indent=4)
 
-    # Save cleaned data
-    output_path = "data/processed/string_cleaned_data.csv"
+print("\nFIRST 5 ROWS AFTER CLEANING")
+print(df.head())
 
-    df.to_csv(
-        output_path,
-        index=False,
-    )
+print("\nFINAL CLEANED DATA")
+print(df)
 
-    print("\n" + "=" * 70)
-    print("STRING CLEANING COMPLETED SUCCESSFULLY")
-    print("=" * 70)
-    print(f"Cleaned dataset saved to:\n{output_path}")
+print("\n" + "=" * 70)
+print("STRING CLEANING COMPLETED SUCCESSFULLY")
+print("=" * 70)
 
-
-if __name__ == "__main__":
-    main()
+print("\nGenerated Files")
+print("data/raw/string_data.csv")
+print("data/processed/string_cleaned_data.csv")
+print("output/string_cleaning_summary.json")

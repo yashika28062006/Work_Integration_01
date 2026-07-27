@@ -1,0 +1,12 @@
+{
+    "rows": 7,
+    "columns": [
+        "name",
+        "category",
+        "segment",
+        "city"
+    ],
+    "whitespace_fixed": 6,
+    "regex_used": "[^a-zA-Z0-9 ]",
+    "mapping_categories": 3
+}
